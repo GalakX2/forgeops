@@ -68,7 +68,7 @@ CD : Déploie automatiquement sur le VPS lors d'un push sur la branche main.
 Pour que le déploiement fonctionne, les secrets suivants doivent être configurés dans le dépôt GitHub :
 
 * VPS_HOST : IP du serveur.
-* VPS_USER : Utilisateur SSH (ex: jordan).
+* VPS_USER : Utilisateur SSH.
 * VPS_SSH_KEY : Clé privée SSH pour la connexion.
 
 ### Structure sur le VPS
