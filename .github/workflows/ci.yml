@@ -1,0 +1,47 @@
+name: CI (Tests)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: app_user
+          POSTGRES_PASSWORD: secret_password
+          POSTGRES_DB: forgeops_test
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: pdo_pgsql, pgsql
+
+      - name: Install Dependencies
+        run: composer install --no-progress
+
+      - name: Préparation Base de Test
+        env:
+          DATABASE_URL: postgresql://app_user:secret_password@127.0.0.1:5432/forgeops_test?serverVersion=15&charset=utf8
+        run: |
+          php bin/console doctrine:database:create --env=test --if-not-exists
+          php bin/console doctrine:migrations:migrate -n --env=test
+
+      - name: Lancer les tests
+        env:
+          DATABASE_URL: postgresql://app_user:secret_password@127.0.0.1:5432/forgeops_test?serverVersion=15&charset=utf8
+        run: php bin/phpunit

@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Liste des Incidents</h1>
+
+<div class="mb-3">
+    Filtres : 
+    <a href="{{ path('app_incident_index', {status: 'open'}) }}" class="btn btn-sm btn-outline-primary">Open</a>
+    <a href="{{ path('app_incident_index', {severity: 'sev1'}) }}" class="btn btn-sm btn-outline-danger">Sev1</a>
+    <a href="{{ path('app_incident_index') }}" class="btn btn-sm btn-outline-secondary">Reset</a>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Date Début</th>
+            <th>Titre</th>
+            <th>Services</th>
+            <th>Sévérité</th>
+            <th>Statut</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for incident in incidents %}
+        <tr>
+            <td>{{ incident.startedAt|date('Y-m-d H:i') }}</td>
+            <td>{{ incident.title }}</td>
+            <td>
+                {% for service in incident.services %}
+                    <span class="badge bg-info">{{ service.name }}</span>
+                {% endfor %}
+            </td>
+            <td>{{ incident.severity }}</td>
+            <td>{{ incident.status }}</td>
+            <td><a href="{{ path('app_incident_show', {id: incident.id}) }}" class="btn btn-sm btn-primary">Détail</a></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

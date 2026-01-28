@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Tableau de bord</h1>
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-white bg-danger mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Incidents Sev1</h5>
+                <p class="card-text display-4">{{ nbSev1 }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-warning mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Incidents Ouverts</h5>
+                <p class="card-text display-4">{{ nbOpen }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-light mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Services suivis</h5>
+                <p class="card-text display-4">{{ nbServices }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3>10 Derniers incidents</h3>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Titre</th>
+            <th>Sévérité</th>
+            <th>Statut</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for incident in recents %}
+        <tr>
+            <td>{{ incident.startedAt|date('d/m/Y H:i') }}</td>
+            <td>{{ incident.title }}</td>
+            <td><span class="badge bg-secondary">{{ incident.severity }}</span></td>
+            <td>{{ incident.status }}</td>
+            <td><a href="{{ path('app_incident_show', {id: incident.id}) }}">Voir</a></td>
+        </tr>
+    {% else %}
+        <tr><td colspan="5">Aucun incident récent.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

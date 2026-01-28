@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>{{ incident.title }} <span class="badge bg-secondary">{{ incident.status }}</span></h1>
+    <a href="{{ path('app_incident_index') }}" class="btn btn-outline-secondary">Retour</a>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <p><strong>Sévérité :</strong> {{ incident.severity }}</p>
+        <p><strong>Début :</strong> {{ incident.startedAt|date('d/m/Y H:i') }}</p>
+        <p><strong>Fin :</strong> {{ incident.resolvedAt ? incident.resolvedAt|date('d/m/Y H:i') : '-' }}</p>
+        <p><strong>Services impactés :</strong> 
+            {% for s in incident.services %}{{ s.name }} {% endfor %}
+        </p>
+        <p class="mt-3 p-3 bg-light">{{ incident.summary }}</p>
+    </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center">
+    <h3>Journal des événements</h3>
+    <a href="{{ path('app_incident_add_journal', {id: incident.id}) }}" class="btn btn-sm btn-primary">+ Ajouter entrée</a>
+</div>
+
+<ul class="list-group mt-3">
+{% for journal in sortedJournals %}
+    <li class="list-group-item">
+        <strong>{{ journal.occurredAt|date('H:i') }}</strong> 
+        <span class="badge bg-info">{{ journal.type }}</span> : 
+        {{ journal.message }}
+    </li>
+{% else %}
+    <li class="list-group-item">Aucun événement noté.</li>
+{% endfor %}
+</ul>
+{% endblock %}
